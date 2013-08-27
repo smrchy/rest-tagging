@@ -36,7 +36,8 @@ app.configure ->
 	return
 
 app.put '/' + PREFIX + '/id/:bucket/:id', (req, res) ->
-	rt.set {bucket: req.params.bucket, id: req.params.id, score: req.param('score'), tags: JSON.parse(req.param('tags'))}, (err, resp) ->
+	tags = JSON.parse(req.query.tags or "[]")
+	rt.set {bucket: req.params.bucket, id: req.params.id, score: req.query.score, tags: tags}, (err, resp) ->
 		if err
 			res.send(err, 500)
 			return
@@ -53,6 +54,15 @@ app.delete '/' + PREFIX + '/id/:bucket/:id', (req, res) ->
 		res.send(resp)
 		return
 
+app.get '/' + PREFIX + '/tags/:bucket', (req, res) ->
+	req.query.bucket = req.params.bucket
+	req.query.tags = JSON.parse(req.query.tags or "[]")
+	rt.tags req.query, (err, resp) ->
+		if err
+			res.send(err, 500)
+			return
+		res.send(resp)
+		return
 
 
 

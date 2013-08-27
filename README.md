@@ -25,7 +25,7 @@ Add or update an item. The URL contains the namespace (e.g. 'concerts') and the 
 Parameters (as query parameters):
 
 * tags (String) A JSON string with an array of one or more tags (e.g. ["chicago","rock"])
-* score (Number) *optional* Default: 1 This is the sorting criteria for this item
+* score (Number) *optional* Default: 0 This is the sorting criteria for this item
 
 
 Example:
@@ -44,7 +44,7 @@ Example: `DELETE /tagger/id/concerts/12345`
 
 Response:
 
-`{"ok":true}`
+`true`
 
 ### GET /rt/tags/:namespace?queryparams
 
@@ -104,3 +104,10 @@ Idea: You might consider to use a reverse proxy on this URL so clients can acces
     Get all IDs saved for a namespace. This is a costly operation that you should only use for scheduled cleanup routines.
 
     Example: `GET /tagger/allids/concerts`
+
+
+
+## TODO
+
+* Error handling
+* more tests
