@@ -36,7 +36,6 @@ app.configure ->
 	return
 
 app.put '/' + PREFIX + '/id/:bucket/:id', (req, res) ->
-	console.log "PARAMS", req.params
 	rt.set {bucket: req.params.bucket, id: req.params.id, score: req.param('score'), tags: JSON.parse(req.param('tags'))}, (err, resp) ->
 		if err
 			res.send(err, 500)

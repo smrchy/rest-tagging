@@ -39,7 +39,6 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
   });
 
   app.put('/' + PREFIX + '/id/:bucket/:id', function(req, res) {
-    console.log("PARAMS", req.params);
     rt.set({
       bucket: req.params.bucket,
       id: req.params.id,
