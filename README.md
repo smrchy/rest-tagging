@@ -36,7 +36,7 @@ Example:
 
 `PUT /rt/id/concerts/571fc1ba4d?score=20130823&tags=["rock","stadium"]`
 
-Response:
+Returns:
 
 `true`
 
@@ -46,14 +46,14 @@ Delete an item and all its tag associations.
 
 Example: `DELETE /rt/id/concerts/12345`
 
-Response:
+Returns:
 
 `true`
 
 ### GET /rt/tags/:bucket?queryparams
 
-**The main method.** Return the IDs for one or more tags. When more than one tag is supplied the query can be an intersection (default) or a union.
-`type=inter` (default) only those IDs will be returned where all tags match. 
+**The main method.** Return the IDs for one or more tags. When more than one tag is supplied the query can be an intersection (default) or a union.  
+`type=inter` (default) only those IDs will be returned where all tags match.  
 `type=union` all IDs where any tag matches will be returned.
 
 Parameters:
@@ -71,7 +71,7 @@ Example:
 
 Returns: 
 
-```
+```json
 {
     "total_items":108,
     "items":["8167","25652"],
@@ -82,7 +82,9 @@ Returns:
 
 The returned data is item no. 5 and 6. The first 4 got skipped (offset=4). You can now do a
 
-`SELECT * FROM Concerts WHERE ID IN (8167,25652) ORDER BY Timestamp DESC`
+```sql
+SELECT * FROM Concerts WHERE ID IN (8167,25652) ORDER BY Timestamp DESC
+```
 
 
 ### GET /rt/toptags/:bucket/:amount
@@ -95,13 +97,15 @@ Example:
 
 Returns:
 
-```
-{"total_items": 18374,
- "items":[
-    {"tag":"rock", "count":1720},
-    {"tag":"pop", "count":1585},
-    {"tag":"New York", "count":720}
-]}
+```json
+{
+    "total_items": 18374,
+    "items":[
+        {"tag":"rock", "count":1720},
+        {"tag":"pop", "count":1585},
+        {"tag":"New York", "count":720}
+    ]
+}
 ```
 
 ### GET */rt/id/:bucket/:id*
@@ -114,7 +118,7 @@ Example:
 
 Returns:
 
-```
+```json
 [
     "rock",
     "stadium",
@@ -132,7 +136,7 @@ Example:
 
 Returns:
 
-```
+```json
 [
     "id123",
     "id456",
@@ -151,7 +155,7 @@ Example:
 
 Returns:
 
-```
+```json
 [
     "concerts",
     "vacations",
