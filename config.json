@@ -1,0 +1,9 @@
+{
+	"port": 8102,
+	"rest_path_prefix": "rt",
+	"redis": {
+		"host": "127.0.0.1",
+		"port": 6379,
+		"nsprefix": "rt"
+	}
+}

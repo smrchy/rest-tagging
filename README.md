@@ -12,8 +12,8 @@ Use Redis-Tagging on other platforms (PHP, Ruby, Coldfusion, Python etc.) via th
 * Clone this repository
 * Run `npm install` to install the dependencies.
 * For the test make sure Redis runs locally and run `npm test`
-* *Optional:* Modify the server port in server.js
-* Start the server: `node server.js`
+* *Optional:* Modify the default parameters (namespaces and Redis host) in config.json
+* Start the server: `npm start`
 
 
 ## Methods

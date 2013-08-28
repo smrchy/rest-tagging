@@ -1,5 +1,4 @@
-PORT = 8102
-
+PORT = require("./config.json").port
 app = require "./app"
 
 server = app.listen(PORT)
