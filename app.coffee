@@ -12,6 +12,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ###
 
+
 PREFIX = "rt"
 
 
@@ -35,6 +36,7 @@ app.configure ->
 	app.use(express.bodyParser())
 	return
 
+# create an item with tags
 app.put '/' + PREFIX + '/id/:bucket/:id', (req, res) ->
 	tags = JSON.parse(req.query.tags or "[]")
 	rt.set {bucket: req.params.bucket, id: req.params.id, score: req.query.score, tags: tags}, (err, resp) ->
@@ -45,7 +47,7 @@ app.put '/' + PREFIX + '/id/:bucket/:id', (req, res) ->
 		return
 	return
 
-
+# delete an id
 app.delete '/' + PREFIX + '/id/:bucket/:id', (req, res) ->
 	rt.remove req.params, (err, resp) ->
 		if err
@@ -54,6 +56,25 @@ app.delete '/' + PREFIX + '/id/:bucket/:id', (req, res) ->
 		res.send(resp)
 		return
 
+# get all tags of an id
+app.get '/' + PREFIX + '/id/:bucket/:id', (req, res) ->
+	rt.get req.params, (err, resp) ->
+		if err
+			res.send(err, 500)
+			return
+		res.send(resp)
+		return
+
+# get all ids of a bucket
+app.get '/' + PREFIX + '/allids/:bucket', (req, res) ->
+	rt.allids req.params, (err, resp) ->
+		if err
+			res.send(err, 500)
+			return
+		res.send(resp)
+		return
+
+# tags: the main query. query items for some tags
 app.get '/' + PREFIX + '/tags/:bucket', (req, res) ->
 	req.query.bucket = req.params.bucket
 	req.query.tags = JSON.parse(req.query.tags or "[]")
@@ -64,10 +85,33 @@ app.get '/' + PREFIX + '/tags/:bucket', (req, res) ->
 		res.send(resp)
 		return
 
+# top tags
+app.get '/' + PREFIX + '/toptags/:bucket/:amount', (req, res) ->
+	rt.toptags req.params, (err, resp) ->
+		if err
+			res.send(err, 500)
+			return
+		res.send(resp)
+		return
 
+# buckets
+app.get '/' + PREFIX + '/buckets', (req, res) ->
+	rt.buckets (err, resp) ->
+		if err
+			res.send(err, 500)
+			return
+		res.send(resp)
+		return
 
-
-
+# removebucket
+app.delete '/' + PREFIX + '/bucket/:bucket', (req, res) ->
+	rt.removebucket req.params, (err, resp) ->
+		console.log resp
+		if err
+			res.send(err, 500)
+			return
+		res.send(resp)
+		return
 	return
 
 

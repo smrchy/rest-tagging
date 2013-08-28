@@ -65,10 +65,61 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
     });
   });
 
+  app.get('/' + PREFIX + '/id/:bucket/:id', function(req, res) {
+    return rt.get(req.params, function(err, resp) {
+      if (err) {
+        res.send(err, 500);
+        return;
+      }
+      res.send(resp);
+    });
+  });
+
+  app.get('/' + PREFIX + '/allids/:bucket', function(req, res) {
+    return rt.allids(req.params, function(err, resp) {
+      if (err) {
+        res.send(err, 500);
+        return;
+      }
+      res.send(resp);
+    });
+  });
+
   app.get('/' + PREFIX + '/tags/:bucket', function(req, res) {
     req.query.bucket = req.params.bucket;
     req.query.tags = JSON.parse(req.query.tags || "[]");
-    rt.tags(req.query, function(err, resp) {
+    return rt.tags(req.query, function(err, resp) {
+      if (err) {
+        res.send(err, 500);
+        return;
+      }
+      res.send(resp);
+    });
+  });
+
+  app.get('/' + PREFIX + '/toptags/:bucket/:amount', function(req, res) {
+    return rt.toptags(req.params, function(err, resp) {
+      if (err) {
+        res.send(err, 500);
+        return;
+      }
+      res.send(resp);
+    });
+  });
+
+  app.get('/' + PREFIX + '/buckets', function(req, res) {
+    return rt.buckets(function(err, resp) {
+      if (err) {
+        res.send(err, 500);
+        return;
+      }
+      res.send(resp);
+    });
+  });
+
+  app["delete"]('/' + PREFIX + '/bucket/:bucket', function(req, res) {
+    rt.removebucket(req.params, function(err, resp) {
+      console.log(resp);
       if (err) {
         res.send(err, 500);
         return;

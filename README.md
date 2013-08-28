@@ -18,9 +18,13 @@ Use Redis-Tagging on other platforms (PHP, Ruby, Coldfusion, Python etc.) via th
 
 ## Methods
 
-### PUT /rt/id/:namespace/:id
+Redis Tagging uses the concept of buckets (you might call them namespaces). This way a single Redis Tagging instance can store ids and tags for multiple applications.
+A bucket name must be alphanumeric including `-` and `_` and between 1 and 80 characters in length.  
+There is no limit on ids and tags. They could include any character.
 
-Add or update an item. The URL contains the namespace (e.g. 'concerts') and the id for this item.
+### PUT /rt/id/:bucket/:id
+
+Add or update an item. The URL contains the bucket (e.g. 'concerts') and the id for this item.
 
 Parameters (as query parameters):
 
@@ -36,17 +40,17 @@ Response:
 
 `true`
 
-### DELETE /rt/id/:namespace/:id
+### DELETE /rt/id/:bucket/:id
 
 Delete an item and all its tag associations.
 
-Example: `DELETE /tagger/id/concerts/12345`
+Example: `DELETE /rt/id/concerts/12345`
 
 Response:
 
 `true`
 
-### GET /rt/tags/:namespace?queryparams
+### GET /rt/tags/:bucket?queryparams
 
 **The main method.** Return the IDs for one or more tags. When more than one tag is supplied the query can be an intersection (default) or a union.
 `type=inter` (default) only those IDs will be returned where all tags match. 
@@ -61,53 +65,111 @@ Parameters:
 - `withscores` (Number) *optional* Default: 0 Set this to 1 to also return the scores for each item.
 - `order` (String) *optional* Either **asc** or **desc** (default).
 
-Example: `GET /tagger/tags/concerts?tags=["Berlin","rock"]&limit=2&offset=4&type=inter`
+Example:
+
+`GET /rt/tags/concerts?tags=["Berlin","rock"]&limit=2&offset=4&type=inter`
 
 Returns: 
 
-    {"total_items":108,
-     "items":["8167","25652"],
-     "limit":2,
-     "offset":4}
+```
+{
+    "total_items":108,
+    "items":["8167","25652"],
+    "limit":2,
+    "offset":4
+}
+```
 
 The returned data is item no. 5 and 6. The first 4 got skipped (offset=4). You can now do a
 
 `SELECT * FROM Concerts WHERE ID IN (8167,25652) ORDER BY Timestamp DESC`
 
-Important: `redis-tagging` uses Redis Sorted Sets. This is why the order of the items that you supplied with the `score` parameter is maintained. This way you can page thru large result sets without doing huge SQL queries.
 
-Idea: You might consider to use a reverse proxy on this URL so clients can access this data via AJAX. JSONP via standard `callback` URL parameter is supported.
+### GET /rt/toptags/:bucket/:amount
 
-- GET */tagger/toptags/:namespace/:amount*
+Get the top *n* tags of a bucket.
 
-    Get the top *n* tags for a namespace.
+Example:
 
-    Example: `GET /tagger/toptags/concerts/3`
+`GET /rt/toptags/concerts/3`
 
-    Returns:
+Returns:
 
-        {"total_items": 18374,
-         "items":[
-            {"tag":"rock", "count":1720},
-            {"tag":"pop", "count":1585},
-            {"tag":"New York", "count":720}
-        ]}
+```
+{"total_items": 18374,
+ "items":[
+    {"tag":"rock", "count":1720},
+    {"tag":"pop", "count":1585},
+    {"tag":"New York", "count":720}
+]}
+```
 
-- GET */tagger/id/:namespace/:id*
+### GET */rt/id/:bucket/:id*
 
-    Get all associated tags for an item. Usually this operation is not needed as you will want to store all tags for an item in you database.
+Get all associated tags for an item. Usually this operation is not needed as you will want to store all tags for an item in you database.
 
-    Example: `GET /tagger/id/concerts/12345`
+Example:
 
-- GET */tagger/allids/:namespace*
+`GET /rt/id/concerts/12345`
 
-    Get all IDs saved for a namespace. This is a costly operation that you should only use for scheduled cleanup routines.
+Returns:
 
-    Example: `GET /tagger/allids/concerts`
+```
+[
+    "rock",
+    "stadium",
+    "miami"
+]
+```
+
+### GET /rt/allids/:bucket
+
+Get all IDs saved in a bucket.
+
+Example:
+
+`GET /rt/allids/concerts`
+
+Returns:
+
+```
+[
+    "id123",
+    "id456",
+    "id789"
+]
+```
+
+### GET /rt/buckets
+
+List all buckets.
+**Note:** This uses redis.keys. Use with care! It will slow down Redis when lots of keys are stored in Redis.
+
+Example:
+
+`GET /rt/buckets`
+
+Returns:
+
+```
+[
+    "concerts",
+    "vacations",
+    "users"
+]
+```
 
 
 
-## TODO
+### DELETE /rt/removebucket/:bucket
 
-* Error handling
-* more tests
+Remove a single bucket.
+
+Example:
+
+`DELETE /rt/removebucket/concerts`
+
+Returns:
+
+`true`
+
