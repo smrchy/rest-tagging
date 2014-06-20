@@ -54,8 +54,8 @@
         resp.statusCode.should.equal(200);
         result = JSON.parse(resp.body);
         result.total_items.should.equal(2);
-        result.items.should.include("id123");
-        result.items.should.include("id456");
+        result.items.should.containEql("id123");
+        result.items.should.containEql("id456");
         done();
       });
     });
@@ -65,7 +65,7 @@
         resp.statusCode.should.equal(200);
         result = JSON.parse(resp.body);
         result.total_items.should.equal(1);
-        result.items.should.include("id123");
+        result.items.should.containEql("id123");
         done();
       });
     });
@@ -93,8 +93,8 @@
         resp.statusCode.should.equal(200);
         result = JSON.parse(resp.body);
         result.total_items.should.equal(2);
-        result.items.should.include("id123");
-        result.items.should.include("id456");
+        result.items.should.containEql("id123");
+        result.items.should.containEql("id456");
         done();
       });
     });
@@ -104,7 +104,7 @@
         resp.statusCode.should.equal(200);
         result = JSON.parse(resp.body);
         result.total_items.should.equal(1);
-        result.items.should.include("id456");
+        result.items.should.containEql("id456");
         done();
       });
     });
@@ -123,9 +123,9 @@
         var result;
         resp.statusCode.should.equal(200);
         result = JSON.parse(resp.body);
-        result.should.include("all");
-        result.should.include("tag1");
-        result.should.include("tag2");
+        result.should.containEql("all");
+        result.should.containEql("tag1");
+        result.should.containEql("tag2");
         done();
       });
     });
@@ -134,8 +134,8 @@
         var result;
         resp.statusCode.should.equal(200);
         result = JSON.parse(resp.body);
-        result.should.include("id123");
-        result.should.include("id456");
+        result.should.containEql("id123");
+        result.should.containEql("id456");
         done();
       });
     });
@@ -144,7 +144,7 @@
         var result;
         resp.statusCode.should.equal(200);
         result = JSON.parse(resp.body);
-        result.should.include("TestBucket");
+        result.should.containEql("TestBucket");
         done();
       });
     });
