@@ -1,7 +1,7 @@
 {
     "name": "rest-tagging",
     "description": "A REST interface for redis-tagging",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "author": "P. Liess <smrchy+npm@gmail.com>",
     "engines": {
 		"node": "> 0.8.10"
@@ -10,11 +10,13 @@
 		"test": "mocha ./test/test.js"
 	},
 	"dependencies": {
+		"lodash": "*",
 		"redis-tagging": "*",
-		"express": "<4.0"
+		"express": "4.x",
+		"morgan": "*",
+		"body-parser": "*"
 	},
 	"devDependencies": {
-		"underscore": "*",
 		"mocha": "*",
 		"should": "*",
 		"async": "*"

@@ -15,7 +15,9 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
 
 (function() {
-  var RESTPREFIX, RedisTagging, app, cfg, express, rt;
+  var RESTPREFIX, RedisTagging, app, bodyParser, cfg, express, morgan, rt, _, _respond;
+
+  _ = require("lodash");
 
   cfg = require("./config.json");
 
@@ -23,22 +25,31 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
   RedisTagging = require("redis-tagging");
 
+  bodyParser = require("body-parser");
+
+  morgan = require("morgan");
+
   rt = new RedisTagging(cfg.redis);
 
   express = require('express');
 
   app = express();
 
-  app.use(function(req, res, next) {
+  app.use(bodyParser.json({
+    limit: 60000
+  }));
+
+  app.use(morgan('dev'));
+
+  _respond = function(res, err, resp) {
     res.header('Content-Type', "application/json");
     res.removeHeader("X-Powered-By");
-    next();
-  });
-
-  app.configure(function() {
-    app.use(express.logger("dev"));
-    app.use(express.bodyParser());
-  });
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+    res.send(resp);
+  };
 
   app.put('/' + RESTPREFIX + '/id/:bucket/:id', function(req, res) {
     var tags;
@@ -48,86 +59,37 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
       id: req.params.id,
       score: req.query.score,
       tags: tags
-    }, function(err, resp) {
-      if (err) {
-        res.send(err, 500);
-        return;
-      }
-      res.send(resp);
-    });
+    }, _.partial(_respond, res));
   });
 
   app["delete"]('/' + RESTPREFIX + '/id/:bucket/:id', function(req, res) {
-    return rt.remove(req.params, function(err, resp) {
-      if (err) {
-        res.send(err, 500);
-        return;
-      }
-      res.send(resp);
-    });
+    rt.remove(req.params, _.partial(_respond, res));
   });
 
   app.get('/' + RESTPREFIX + '/id/:bucket/:id', function(req, res) {
-    return rt.get(req.params, function(err, resp) {
-      if (err) {
-        res.send(err, 500);
-        return;
-      }
-      res.send(resp);
-    });
+    rt.get(req.params, _.partial(_respond, res));
   });
 
   app.get('/' + RESTPREFIX + '/allids/:bucket', function(req, res) {
-    return rt.allids(req.params, function(err, resp) {
-      if (err) {
-        res.send(err, 500);
-        return;
-      }
-      res.send(resp);
-    });
+    rt.allids(req.params, _.partial(_respond, res));
   });
 
   app.get('/' + RESTPREFIX + '/tags/:bucket', function(req, res) {
     req.query.bucket = req.params.bucket;
     req.query.tags = JSON.parse(req.query.tags || "[]");
-    return rt.tags(req.query, function(err, resp) {
-      if (err) {
-        res.send(err, 500);
-        return;
-      }
-      res.send(resp);
-    });
+    rt.tags(req.query, _.partial(_respond, res));
   });
 
   app.get('/' + RESTPREFIX + '/toptags/:bucket/:amount', function(req, res) {
-    return rt.toptags(req.params, function(err, resp) {
-      if (err) {
-        res.send(err, 500);
-        return;
-      }
-      res.send(resp);
-    });
+    rt.toptags(req.params, _.partial(_respond, res));
   });
 
   app.get('/' + RESTPREFIX + '/buckets', function(req, res) {
-    return rt.buckets(function(err, resp) {
-      if (err) {
-        res.send(err, 500);
-        return;
-      }
-      res.send(resp);
-    });
+    rt.buckets(_.partial(_respond, res));
   });
 
   app["delete"]('/' + RESTPREFIX + '/bucket/:bucket', function(req, res) {
-    rt.removebucket(req.params, function(err, resp) {
-      console.log(resp);
-      if (err) {
-        res.send(err, 500);
-        return;
-      }
-      res.send(resp);
-    });
+    rt.removebucket(req.params, _.partial(_respond, res));
   });
 
   module.exports = app;

@@ -2,7 +2,7 @@
 (function() {
   var app, async, http, should, _;
 
-  _ = require("underscore");
+  _ = require("lodash");
 
   should = require("should");
 
