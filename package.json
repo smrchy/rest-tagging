@@ -1,24 +1,24 @@
 {
     "name": "rest-tagging",
     "description": "A REST interface for redis-tagging",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "author": "P. Liess <smrchy+npm@gmail.com>",
     "engines": {
-		"node": "> 0.8.10"
+		"node": "> 0.10.10"
 	},
 	"scripts": {
 		"test": "mocha ./test/test.js"
 	},
 	"dependencies": {
-		"lodash": "*",
-		"redis-tagging": "*",
+		"lodash": "4.x",
+		"redis-tagging": "1.4.0",
 		"express": "4.x",
 		"morgan": "*",
 		"body-parser": "*"
 	},
 	"devDependencies": {
-		"mocha": "*",
-		"should": "*",
+		"mocha": "2.3.4",
+		"should": "8.2.0",
 		"async": "*"
 	},
 	"keywords": [
@@ -38,5 +38,4 @@
 		"type": "git",
 		"url": "http://github.com/smrchy/rest-tagging.git"
 	}
-
 }
