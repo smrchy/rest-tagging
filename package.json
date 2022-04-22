@@ -6,6 +6,9 @@
     "engines": {
         "node": ">= 14.0.0"
     },
+    "files": [
+        "lib/**/*"
+    ],
     "scripts": {
         "start": "node lib/index.js",
         "test": "mocha --require ts-node/register ./test/test.ts",
@@ -56,5 +59,9 @@
     "repository": {
         "type": "git",
         "url": "http://github.com/smrchy/rest-tagging.git"
-    }
+    },
+    "bugs": {
+        "url": "http://github.com/smrchy/rest-tagging/issues"
+    },
+    "homepage": "http://github.com/smrchy/rest-tagging#readme"
 }
